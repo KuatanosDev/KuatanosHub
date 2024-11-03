@@ -1,0 +1,288 @@
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
+local UIS = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+
+local ScreenGui = Instance.new("ScreenGui", localPlayer.PlayerGui)
+local Frame = Instance.new("Frame", ScreenGui)
+Frame.Size = UDim2.new(0, 600, 0, 400)
+Frame.Position = UDim2.new(0.5, -300, 0.5, -200)
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.Active = true
+Frame.Draggable = true
+
+local Title = Instance.new("TextLabel", Frame)
+Title.Size = UDim2.new(0, 600, 0, 100)
+Title.Position = UDim2.new(0, 0, 0, 10)
+Title.Text = "Kuatanos Hub"
+Title.Font = Enum.Font.SourceSans
+Title.TextSize = 48
+Title.TextColor3 = Color3.fromRGB(0, 0, 255)
+Title.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 50, 0, 50)
+closeButton.Position = UDim2.new(1, -55, 0, 5)
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+closeButton.Text = "X"
+closeButton.Parent = Frame
+
+local minimizeButton = Instance.new("TextButton")
+minimizeButton.Size = UDim2.new(0, 50, 0, 50)
+minimizeButton.Position = UDim2.new(1, -110, 0, 5)
+minimizeButton.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+minimizeButton.Text = "-"
+minimizeButton.Parent = Frame
+
+local isMinimized = false
+
+minimizeButton.MouseButton1Click:Connect(function()
+    isMinimized = not isMinimized
+    if isMinimized then
+        Frame.Size = UDim2.new(0, 150, 0, 50)
+        Frame.Position = UDim2.new(0.5, -75, 0.5, -25)
+        for _, child in pairs(Frame:GetChildren()) do
+            if child ~= Title and child ~= closeButton and child ~= minimizeButton then
+                child.Visible = false
+            end
+        end
+    else
+        Frame.Size = UDim2.new(0, 600, 0, 400)
+        Frame.Position = UDim2.new(0.5, -300, 0.5, -200)
+        for _, child in pairs(Frame:GetChildren()) do
+            if child ~= Title and child ~= closeButton and child ~= minimizeButton then
+                child.Visible = true
+            end
+        end
+    end
+end)
+
+local function closeWindow()
+    ScreenGui:Destroy() -- Удаляем GUI
+end
+
+closeButton.MouseButton1Click:Connect(closeWindow)
+
+-- Noclip Button
+local noclipButton = Instance.new("TextButton")
+noclipButton.Size = UDim2.new(0, 125, 0, 50)
+noclipButton.Position = UDim2.new(0, 10, 0, 130)
+noclipButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+noclipButton.Text = "Noclip"
+noclipButton.Parent = Frame
+
+local noclipEnabled = false
+local noclipConnection
+
+local function onStepped()
+    if noclipEnabled then
+        for _, part in pairs(localPlayer.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+    end
+end
+
+noclipButton.MouseButton1Click:Connect(function()
+    noclipEnabled = not noclipEnabled
+    if noclipEnabled then
+        noclipButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+        noclipConnection = RunService.Stepped:Connect(onStepped)
+    else
+        noclipButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        if noclipConnection then
+            noclipConnection:Disconnect()
+            noclipConnection = nil
+        end
+        for _, part in pairs(localPlayer.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = true
+            end
+        end
+    end
+end)
+
+-- Infinite Jump Button
+local infJumpButton = Instance.new("TextButton")
+infJumpButton.Size = UDim2.new(0, 125, 0, 50)
+infJumpButton.Position = UDim2.new(0, 10, 0, 190)
+infJumpButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+infJumpButton.Text = "InfJump"
+infJumpButton.Parent = Frame
+
+local infJumpEnabled = false
+
+infJumpButton.MouseButton1Click:Connect(function()
+    infJumpEnabled = not infJumpEnabled
+    infJumpButton.BackgroundColor3 = infJumpEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+end)
+
+UIS.InputBegan:Connect(function(input, gameProcessedEvent)
+    if input.KeyCode == Enum.KeyCode.Space and not gameProcessedEvent and infJumpEnabled then
+        localPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    end
+end)
+
+-- Fly Button
+local flyButton = Instance.new("TextButton")
+flyButton.Size = UDim2.new(0, 125, 0, 50)
+flyButton.Position = UDim2.new(0, 10, 0, 250)
+flyButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+flyButton.Text = "Fly"
+flyButton.Parent = Frame
+
+local flyEnabled = false
+local bodyVelocity
+
+local function toggleFly()
+    flyEnabled = not flyEnabled
+    flyButton.BackgroundColor3 = flyEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+    localPlayer.Character.Humanoid.PlatformStand = flyEnabled
+    
+    if flyEnabled then
+        bodyVelocity = Instance.new("BodyVelocity")
+        bodyVelocity.MaxForce = Vector3.new(4000, 4000, 4000)
+        bodyVelocity.Parent = localPlayer.Character.HumanoidRootPart
+
+        RunService.RenderStepped:Connect(function()
+            if flyEnabled then
+                local moveDirection = Vector3.new(0, 0, 0)
+                if UIS:IsKeyDown(Enum.KeyCode.W) then moveDirection = moveDirection + workspace.CurrentCamera.CFrame.LookVector end
+                if UIS:IsKeyDown(Enum.KeyCode.S) then moveDirection = moveDirection - workspace.CurrentCamera.CFrame.LookVector end
+                if UIS:IsKeyDown(Enum.KeyCode.A) then moveDirection = moveDirection - workspace.CurrentCamera.CFrame.RightVector end
+                if UIS:IsKeyDown(Enum.KeyCode.D) then moveDirection = moveDirection + workspace.CurrentCamera.CFrame.RightVector end
+                if UIS:IsKeyDown(Enum.KeyCode.Space) then moveDirection = moveDirection + Vector3.new(0, 1, 0) end
+                if UIS:IsKeyDown(Enum.KeyCode.LeftControl) then moveDirection = moveDirection - Vector3.new(0, 1, 0) end
+                bodyVelocity.Velocity = moveDirection * 50
+            end
+        end)
+    else
+        if bodyVelocity then
+            bodyVelocity:Destroy()
+            bodyVelocity = nil
+        end
+    end
+end
+
+flyButton.MouseButton1Click:Connect(toggleFly)
+
+-- Tp Tool Button
+local tpToolButton = Instance.new("TextButton")
+tpToolButton.Size = UDim2.new(0, 125, 0, 50)
+tpToolButton.Position = UDim2.new(0, 10, 0, 310)
+tpToolButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+tpToolButton.Text = "Tp Tool"
+tpToolButton.Parent = Frame
+
+tpToolButton.MouseButton1Click:Connect(function()
+    local tool = Instance.new("Tool")
+    tool.Name = "Tp Tool"
+    tool.RequiresHandle = true
+    
+    local handle = Instance.new("Part")
+    handle.Name = "Handle"
+    handle.Size = Vector3.new(1, 1, 1)
+    handle.CanCollide = false
+    handle.Transparency = 1
+    handle.Parent = tool
+
+    tool.Parent = localPlayer.Backpack
+
+    tool.Activated:Connect(function()
+        local mouse = localPlayer:GetMouse()
+        local targetPosition = mouse.Hit.p
+        localPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+    end)
+end)
+
+-- ESP Button
+local espButton = Instance.new("TextButton")
+espButton.Size = UDim2.new(0, 125, 0, 50)
+espButton.Position = UDim2.new(0, 150, 0, 130)
+espButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+espButton.Text = "ESP Players"
+espButton.Parent = Frame
+
+local espEnabled = false
+local espHighlights = {}
+
+local function toggleESP()
+    espEnabled = not espEnabled
+    espButton.BackgroundColor3 = espEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+
+    if espEnabled then
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= localPlayer then
+                local highlight = Instance.new("Highlight")
+                highlight.Adornee = player.Character
+                highlight.FillColor = Color3.fromRGB(255, 255, 255)
+                highlight.OutlineColor = Color3.fromRGB(0, 0, 0)
+                highlight.Parent = player.Character
+                table.insert(espHighlights, highlight)
+            end
+        end
+
+        Players.PlayerAdded:Connect(function(player)
+            player.CharacterAdded:Connect(function(character)
+                local highlight = Instance.new("Highlight")
+                highlight.Adornee = character
+                highlight.FillColor = Color3.fromRGB(255, 255, 255)
+                highlight.OutlineColor = Color3.fromRGB(0, 0, 0)
+                highlight.Parent = character
+                table.insert(espHighlights, highlight)
+            end)
+        end)
+    else
+        for _, highlight in pairs(espHighlights) do
+            highlight:Destroy()
+        end
+        espHighlights = {}
+    end
+end
+
+espButton.MouseButton1Click:Connect(toggleESP)
+
+-- Fullbright Button
+local fullbrightButton = Instance.new("TextButton")
+fullbrightButton.Size = UDim2.new(0, 125, 0, 50)
+fullbrightButton.Position = UDim2.new(0, 150, 0, 190)
+fullbrightButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+fullbrightButton.Text = "Fullbright"
+fullbrightButton.Parent = Frame
+
+local fullbrightEnabled = false
+local originalBrightness = game:GetService("Lighting").Brightness
+
+local function toggleFullbright()
+    fullbrightEnabled = not fullbrightEnabled
+    fullbrightButton.BackgroundColor3 = fullbrightEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+    game:GetService("Lighting").Brightness = fullbrightEnabled and 10 or originalBrightness
+end
+
+fullbrightButton.MouseButton1Click:Connect(toggleFullbright)
+
+-- Infinite Yield Button
+local infiniteYieldButton = Instance.new("TextButton")
+infiniteYieldButton.Size = UDim2.new(0, 125, 0, 50)
+infiniteYieldButton.Position = UDim2.new(0, 150, 0, 250)
+infiniteYieldButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+infiniteYieldButton.Text = "Infinite Yield"
+infiniteYieldButton.Parent = Frame
+
+infiniteYieldButton.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+end)
+
+-- Ensure the GUI stays when player dies
+local function onCharacterAdded(character)
+    if not ScreenGui:IsDescendantOf(localPlayer.PlayerGui) then
+        ScreenGui.Parent = localPlayer.PlayerGui
+    end
+end
+
+localPlayer.CharacterAdded:Connect(onCharacterAdded)
+if localPlayer.Character then
+    onCharacterAdded(localPlayer.Character)
+end
