@@ -275,6 +275,31 @@ infiniteYieldButton.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
 end)
 
+-- Night Button
+local nightButton = Instance.new("TextButton")
+nightButton.Size = UDim2.new(0, 125, 0, 50)
+nightButton.Position = UDim2.new(0, 150, 0, 310)
+nightButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+nightButton.Text = "Night"
+nightButton.Parent = Frame
+
+local nightEnabled = false
+
+local function toggleNight()
+    nightEnabled = not nightEnabled
+    nightButton.BackgroundColor3 = nightEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+    
+    -- Изменение освещения в зависимости от состояния nightEnabled
+    local lighting = game:GetService("Lighting")
+    if nightEnabled then
+        lighting.TimeOfDay = "00:00:00" -- Устанавливаем на полночь
+    else
+        lighting.TimeOfDay = "14:00:00" -- Устанавливаем на день
+    end
+end
+
+nightButton.MouseButton1Click:Connect(toggleNight)
+
 -- Ensure the GUI stays when player dies
 local function onCharacterAdded(character)
     if not ScreenGui:IsDescendantOf(localPlayer.PlayerGui) then
