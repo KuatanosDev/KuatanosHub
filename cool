@@ -6,8 +6,8 @@ local RunService = game:GetService("RunService")
 
 local ScreenGui = Instance.new("ScreenGui", localPlayer.PlayerGui)
 local Frame = Instance.new("Frame", ScreenGui)
-Frame.Size = UDim2.new(0, 600, 0, 400)
-Frame.Position = UDim2.new(0.5, -300, 0.5, -200)
+Frame.Size = UDim2.new(0, 600, 0, 500)
+Frame.Position = UDim2.new(0.5, -300, 0.5, -250)
 Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 Frame.Active = true
 Frame.Draggable = true
@@ -48,8 +48,8 @@ minimizeButton.MouseButton1Click:Connect(function()
             end
         end
     else
-        Frame.Size = UDim2.new(0, 600, 0, 400)
-        Frame.Position = UDim2.new(0.5, -300, 0.5, -200)
+        Frame.Size = UDim2.new(0, 600, 0, 500)
+        Frame.Position = UDim2.new(0.5, -300, 0.5, -250)
         for _, child in pairs(Frame:GetChildren()) do
             if child ~= Title and child ~= closeButton and child ~= minimizeButton then
                 child.Visible = true
@@ -244,38 +244,42 @@ end
 
 espButton.MouseButton1Click:Connect(toggleESP)
 
--- Fullbright Button
-local fullbrightButton = Instance.new("TextButton")
-fullbrightButton.Size = UDim2.new(0, 125, 0, 50)
-fullbrightButton.Position = UDim2.new(0, 150, 0, 190)
-fullbrightButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-fullbrightButton.Text = "Fullbright"
-fullbrightButton.Parent = Frame
+-- Full Bright Button
+local fullBrightButton = Instance.new("TextButton")
+fullBrightButton.Size = UDim2.new(0, 125, 0, 50)
+fullBrightButton.Position = UDim2.new(0, 150, 0, 190)
+fullBrightButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+fullBrightButton.Text = "Full Bright"
+fullBrightButton.Parent = Frame
 
-local fullbrightEnabled = false
-local originalBrightness = game:GetService("Lighting").Brightness
+local isFullBright = false
 
-local function toggleFullbright()
-    fullbrightEnabled = not fullbrightEnabled
-    fullbrightButton.BackgroundColor3 = fullbrightEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-    game:GetService("Lighting").Brightness = fullbrightEnabled and 10 or originalBrightness
-end
-
-fullbrightButton.MouseButton1Click:Connect(toggleFullbright)
+fullBrightButton.MouseButton1Click:Connect(function()
+    isFullBright = not isFullBright
+    fullBrightButton.BackgroundColor3 = isFullBright and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+    
+    if isFullBright then
+        game.Lighting.Brightness = 2
+        game.Lighting.Ambient = Color3.fromRGB(255, 255, 255)
+    else
+        game.Lighting.Brightness = 1
+        game.Lighting.Ambient = Color3.fromRGB(127, 127, 127)
+    end
+end)
 
 -- Infinite Yield Button
 local infiniteYieldButton = Instance.new("TextButton")
 infiniteYieldButton.Size = UDim2.new(0, 125, 0, 50)
 infiniteYieldButton.Position = UDim2.new(0, 150, 0, 250)
 infiniteYieldButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-infiniteYieldButton.Text = "Infinite Yield"
+infiniteYieldButton.Text = "Inf Yield"
 infiniteYieldButton.Parent = Frame
 
 infiniteYieldButton.MouseButton1Click:Connect(function()
-    loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
 end)
 
--- Night Button
+-- Night Mode Button
 local nightButton = Instance.new("TextButton")
 nightButton.Size = UDim2.new(0, 125, 0, 50)
 nightButton.Position = UDim2.new(0, 150, 0, 310)
@@ -283,31 +287,53 @@ nightButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 nightButton.Text = "Night"
 nightButton.Parent = Frame
 
-local nightEnabled = false
+local isNight = false
 
-local function toggleNight()
-    nightEnabled = not nightEnabled
-    nightButton.BackgroundColor3 = nightEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+nightButton.MouseButton1Click:Connect(function()
+    isNight = not isNight
+    nightButton.BackgroundColor3 = isNight and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
     
-    -- Изменение освещения в зависимости от состояния nightEnabled
-    local lighting = game:GetService("Lighting")
-    if nightEnabled then
-        lighting.TimeOfDay = "00:00:00" -- Устанавливаем на полночь
+    if isNight then
+        game.Lighting.Brightness = 0.2
+        game.Lighting.Ambient = Color3.fromRGB(0, 0, 50)
     else
-        lighting.TimeOfDay = "14:00:00" -- Устанавливаем на день
+        game.Lighting.Brightness = 1
+        game.Lighting.Ambient = Color3.fromRGB(127, 127, 127)
     end
-end
+end)
 
-nightButton.MouseButton1Click:Connect(toggleNight)
+-- Speed Input Field
+local speedInput = Instance.new("TextBox")
+speedInput.Size = UDim2.new(0, 125, 0, 50)
+speedInput.Position = UDim2.new(0, 290, 0, 130)
+speedInput.BackgroundColor3 = Color3.fromRGB(0, 0, 255) -- Синий цвет
+speedInput.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
+speedInput.PlaceholderText = "Speed"
+speedInput.Parent = Frame
 
--- Ensure the GUI stays when player dies
-local function onCharacterAdded(character)
-    if not ScreenGui:IsDescendantOf(localPlayer.PlayerGui) then
-        ScreenGui.Parent = localPlayer.PlayerGui
+speedInput.FocusLost:Connect(function(enterPressed)
+    if enterPressed then
+        local newSpeed = tonumber(speedInput.Text)
+        if newSpeed then
+            localPlayer.Character.Humanoid.WalkSpeed = newSpeed
+        end
     end
-end
+end)
 
-localPlayer.CharacterAdded:Connect(onCharacterAdded)
-if localPlayer.Character then
-    onCharacterAdded(localPlayer.Character)
-end
+-- Jump Power Input Field
+local jumpPowerInput = Instance.new("TextBox")
+jumpPowerInput.Size = UDim2.new(0, 125, 0, 50)
+jumpPowerInput.Position = UDim2.new(0, 290, 0, 190)
+jumpPowerInput.BackgroundColor3 = Color3.fromRGB(0, 0, 255) -- Синий цвет
+jumpPowerInput.TextColor3 = Color3.fromRGB(255, 255, 255) -- Белый текст
+jumpPowerInput.PlaceholderText = "Jump Power"
+jumpPowerInput.Parent = Frame
+
+jumpPowerInput.FocusLost:Connect(function(enterPressed)
+    if enterPressed then
+        local newJumpPower = tonumber(jumpPowerInput.Text)
+        if newJumpPower and localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") then
+            localPlayer.Character.Humanoid.JumpPower = newJumpPower
+        end
+    end
+end)
