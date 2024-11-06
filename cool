@@ -6,6 +6,7 @@ local RunService = game:GetService("RunService")
 
 local ScreenGui = Instance.new("ScreenGui", localPlayer.PlayerGui)
 local Frame = Instance.new("Frame", ScreenGui)
+ScreenGui.ResetOnSpawn = false
 Frame.Size = UDim2.new(0, 600, 0, 500)
 Frame.Position = UDim2.new(0.5, -300, 0.5, -250)
 Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
