@@ -338,3 +338,51 @@ jumpPowerInput.FocusLost:Connect(function(enterPressed)
         end
     end
 end)
+
+
+local antifling
+local antiflingButton = Instance.new("TextButton")
+antiflingButton.Size = UDim2.new(0, 125, 0, 50)
+antiflingButton.Position = UDim2.new(0, 290, 0, 250)
+antiflingButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+antiflingButton.Text = "Antifling"
+antiflingButton.Parent = Frame
+
+local antiflingEnabled = false
+
+local function enableAntifling()
+    if antifling then
+        antifling:Disconnect()
+        antifling = nil
+    end
+
+    antifling = RunService.Stepped:Connect(function()
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= localPlayer and player.Character then
+                for _, v in pairs(player.Character:GetDescendants()) do
+                    if v:IsA("BasePart") then
+                        v.CanCollide = false
+                    end
+                end
+            end
+        end
+    end)
+end
+
+local function disableAntifling()
+    if antifling then
+        antifling:Disconnect()
+        antifling = nil
+    end
+end
+
+antiflingButton.MouseButton1Click:Connect(function()
+    antiflingEnabled = not antiflingEnabled
+    antiflingButton.BackgroundColor3 = antiflingEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+
+    if antiflingEnabled then
+        enableAntifling()
+    else
+        disableAntifling()
+    end
+end)
