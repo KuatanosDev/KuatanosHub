@@ -386,3 +386,52 @@ antiflingButton.MouseButton1Click:Connect(function()
         disableAntifling()
     end
 end)
+
+
+-- Создание кнопки AntiAFK
+local antiAFKButton = Instance.new("TextButton")
+antiAFKButton.Size = UDim2.new(0, 125, 0, 50)
+antiAFKButton.Position = UDim2.new(0, 290, 0, 310)  -- Позиция перемещена направо и вверх
+antiAFKButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+antiAFKButton.Text = "AntiAFK"
+antiAFKButton.Parent = Frame
+
+local antiAFK = false
+local movementConnection
+
+-- Включение AntiAFK
+local function enableAntiAFK()
+    antiAFK = true
+    antiAFKButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+
+    spawn(function()
+        while antiAFK do
+            localPlayer.Character.Humanoid:Move(Vector3.new(0, 0, 1), true)
+            wait(1.5)
+            localPlayer.Character.Humanoid:Move(Vector3.new(0, 0, -1), true)
+            wait(1.5)
+        end
+    end)
+end
+
+-- Отключение AntiAFK
+local function disableAntiAFK()
+    antiAFK = false
+    antiAFKButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+end
+
+-- Обработчик нажатия кнопки AntiAFK
+antiAFKButton.MouseButton1Click:Connect(function()
+    if antiAFK then
+        disableAntiAFK()
+    else
+        enableAntiAFK()
+    end
+end)
+
+-- Обработчик нажатия клавиши H для отключения AntiAFK
+UIS.InputBegan:Connect(function(input, gameProcessed)
+    if input.KeyCode == Enum.KeyCode.H and not gameProcessed then
+        disableAntiAFK()
+    end
+end)
