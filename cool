@@ -498,3 +498,72 @@ droppableToolsButton.MouseButton1Click:Connect(function()
 end)
 
 
+-- Goto TextBox для ввода имени игрока (Username или DisplayName)
+local gotoTextBox = Instance.new("TextBox")
+gotoTextBox.Size = UDim2.new(0, 125, 0, 50)
+gotoTextBox.Position = UDim2.new(0, 150, 0, 370)  -- Позиция ниже других элементов
+gotoTextBox.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+gotoTextBox.PlaceholderText = "Enter player name"
+gotoTextBox.Text = ""
+gotoTextBox.Parent = Frame
+
+-- Goto Button для выполнения телепортации
+local gotoButton = Instance.new("TextButton")
+gotoButton.Size = UDim2.new(0, 125, 0, 50)
+gotoButton.Position = UDim2.new(0, 290, 0, 370)  -- Позиция ниже TextBox
+gotoButton.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+gotoButton.Text = "Goto"
+gotoButton.Parent = Frame
+
+-- Функция поиска игрока по Username или DisplayName
+local function findPlayerByName(name)
+    -- Проверяем каждого игрока
+    for _, player in pairs(game.Players:GetPlayers()) do
+        -- Сначала проверяем точное совпадение с Username
+        if player.Name:lower() == name:lower() then
+            return player
+        -- Затем проверяем точное совпадение с DisplayName
+        elseif player.DisplayName:lower() == name:lower() then
+            return player
+        end
+    end
+    -- Если не нашли, возвращаем nil
+    return nil
+end
+
+-- Функция телепортации к указанному игроку
+local function teleportToPlayer(targetName)
+    local speaker = localPlayer
+    local targetPlayer = findPlayerByName(targetName)
+
+    if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        if speaker.Character and speaker.Character:FindFirstChild("HumanoidRootPart") then
+            -- Отключаем сидячее положение, если есть
+            local humanoid = speaker.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid and humanoid.SeatPart then
+                humanoid.Sit = false
+                wait(0.1)
+            end
+            
+            -- Перемещаем к выбранному игроку
+            local speakerRoot = speaker.Character:FindFirstChild("HumanoidRootPart")
+            local targetRoot = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if speakerRoot and targetRoot then
+                speakerRoot.CFrame = targetRoot.CFrame + Vector3.new(3, 1, 0)  -- Смещение, чтобы не пересекаться
+                notify("Goto", "Teleported to " .. targetName)
+            end
+        end
+    else
+        notify("Goto", "Player not found or not in game.")
+    end
+end
+
+-- Обработчик нажатия на кнопку Goto
+gotoButton.MouseButton1Click:Connect(function()
+    local targetName = gotoTextBox.Text
+    if targetName and targetName ~= "" then
+        teleportToPlayer(targetName)
+    else
+        notify("Goto", "Please enter a valid player name.")
+    end
+end)
