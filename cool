@@ -435,3 +435,66 @@ UIS.InputBegan:Connect(function(input, gameProcessed)
         disableAntiAFK()
     end
 end)
+
+
+
+-- Droppable Tools Button
+local droppableToolsButton = Instance.new("TextButton")
+droppableToolsButton.Size = UDim2.new(0, 125, 0, 50)
+droppableToolsButton.Position = UDim2.new(0, 10, 0, 370)  -- Устанавливаем позицию кнопки
+droppableToolsButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+droppableToolsButton.Text = "Droppable Tools"
+droppableToolsButton.Parent = Frame
+
+local droppableToolsEnabled = false
+
+-- Функция для включения Droppable Tools
+local function enableDroppableTools()
+    droppableToolsEnabled = true
+    droppableToolsButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+
+    for _, tool in pairs(localPlayer.Backpack:GetChildren()) do
+        if tool:IsA("Tool") then
+            tool.CanBeDropped = true
+        end
+    end
+
+    if localPlayer.Character then
+        for _, tool in pairs(localPlayer.Character:GetChildren()) do
+            if tool:IsA("Tool") then
+                tool.CanBeDropped = true
+            end
+        end
+    end
+end
+
+-- Функция для отключения Droppable Tools
+local function disableDroppableTools()
+    droppableToolsEnabled = false
+    droppableToolsButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+
+    for _, tool in pairs(localPlayer.Backpack:GetChildren()) do
+        if tool:IsA("Tool") then
+            tool.CanBeDropped = false
+        end
+    end
+
+    if localPlayer.Character then
+        for _, tool in pairs(localPlayer.Character:GetChildren()) do
+            if tool:IsA("Tool") then
+                tool.CanBeDropped = false
+            end
+        end
+    end
+end
+
+-- Обработчик нажатия кнопки Droppable Tools
+droppableToolsButton.MouseButton1Click:Connect(function()
+    if droppableToolsEnabled then
+        disableDroppableTools()
+    else
+        enableDroppableTools()
+    end
+end)
+
+
