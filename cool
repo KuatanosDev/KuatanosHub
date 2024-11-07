@@ -16,7 +16,7 @@ Frame.Draggable = true
 local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(0, 600, 0, 100)
 Title.Position = UDim2.new(0, 0, 0, 10)
-Title.Text = "KuatanosHub/Updatev4/"
+Title.Text = "KuatanosHub/UpdateV2"
 Title.Font = Enum.Font.SourceSans
 Title.TextSize = 48
 Title.TextColor3 = Color3.fromRGB(0, 0, 255)
@@ -566,4 +566,29 @@ gotoButton.MouseButton1Click:Connect(function()
     else
         notify("Goto", "Please enter a valid player name.")
     end
+end)
+
+
+local chHubButton = Instance.new("TextButton")
+chHubButton.Size = UDim2.new(0, 125, 0, 50)
+chHubButton.Position = UDim2.new(0, 10, 0, 430)
+chHubButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Зеленый цвет для кнопки
+chHubButton.Text = "CH Hub"
+chHubButton.Parent = Frame
+
+chHubButton.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Dan41/Scripts/main/%5BCHAOS%5D%20CHAOTIC%20HUB.lua", true))()
+end)
+
+
+-- Кнопка "Doors Script"
+local doorsScriptButton = Instance.new("TextButton")
+doorsScriptButton.Size = UDim2.new(0, 125, 0, 50)
+doorsScriptButton.Position = UDim2.new(0, 150, 0, 430)  -- Позиция для второй кнопки
+doorsScriptButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Красный цвет
+doorsScriptButton.Text = "Doors Script"
+doorsScriptButton.Parent = Frame
+
+doorsScriptButton.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/KINGHUB01/BlackKing-obf/main/Doors%20Blackking%20And%20BobHub"))()
 end)
