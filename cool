@@ -592,3 +592,56 @@ doorsScriptButton.Parent = Frame
 doorsScriptButton.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/KINGHUB01/BlackKing-obf/main/Doors%20Blackking%20And%20BobHub"))()
 end)
+
+
+-- Hitbox Button
+local hitboxButton = Instance.new("TextButton")
+hitboxButton.Size = UDim2.new(0, 125, 0, 50)
+hitboxButton.Position = UDim2.new(0, 430, 0, 130)
+hitboxButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+hitboxButton.Text = "Hitbox++"
+hitboxButton.Parent = Frame
+
+local hitboxSizeInput = Instance.new("TextBox")
+hitboxSizeInput.Size = UDim2.new(0, 125, 0, 30)
+hitboxSizeInput.Position = UDim2.new(0, 430, 0, 190) -- Поле ввода под кнопкой
+hitboxSizeInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+hitboxSizeInput.TextColor3 = Color3.fromRGB(0, 0, 0)
+hitboxSizeInput.PlaceholderText = "Размер (число)"
+hitboxSizeInput.Text = ""
+hitboxSizeInput.Parent = Frame
+
+local hitboxEnabled = false
+local defaultHitboxSize = Vector3.new(5, 5, 5) -- Стандартный увеличенный размер хитбокса
+
+local function parseHitboxSize(input)
+    local size = tonumber(input)
+    if size and size > 0 then
+        return Vector3.new(size, size, size)
+    else
+        return defaultHitboxSize -- Если ввод некорректен, возвращаем стандартный размер
+    end
+end
+
+hitboxButton.MouseButton1Click:Connect(function()
+    hitboxEnabled = not hitboxEnabled
+    hitboxButton.BackgroundColor3 = hitboxEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+
+    local hitboxSize = parseHitboxSize(hitboxSizeInput.Text)
+
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local hrp = player.Character.HumanoidRootPart
+            if hitboxEnabled then
+                hrp.Size = hitboxSize
+                hrp.Transparency = 0.5 -- Сделать хитбокс видимым
+                hrp.Material = Enum.Material.ForceField
+                hrp.CanCollide = false -- Отключить столкновения
+            else
+                hrp.Size = Vector3.new(2, 2, 1) -- Стандартный размер
+                hrp.Transparency = 1 -- Скрыть хитбокс
+                hrp.Material = Enum.Material.Plastic
+            end
+        end
+    end
+end)
