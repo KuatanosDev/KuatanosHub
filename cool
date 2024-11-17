@@ -16,7 +16,7 @@ Frame.Draggable = true
 local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(0, 600, 0, 100)
 Title.Position = UDim2.new(0, 0, 0, 10)
-Title.Text = "KuatanosHub/UpdateV2"
+Title.Text = "KuatanosHub/UpdateV3"
 Title.Font = Enum.Font.SourceSans
 Title.TextSize = 48
 Title.TextColor3 = Color3.fromRGB(0, 0, 255)
@@ -726,11 +726,13 @@ backButton.MouseButton1Click:Connect(function()
 end)
 
 
+-- Обновляем массив имен кнопок и скриптов
 local buttonNames = {
     "CHAOS script",
     "Infinite yield",
     "MM2 Script",
-    "Button 4", "Button 5", "Button 6", "Button 7", "Button 8", "Button 9", "Button 10",
+    "FlyGui script",  -- Заменяем "Button 4" на "FlyGui script"
+    "Button 5", "Button 6", "Button 7", "Button 8", "Button 9", "Button 10",
     "Button 11", "Button 12", "Button 13", "Button 14", "Button 15", "Button 16", "Button 17",
     "Button 18", "Button 19", "Button 20", "Button 21", "Button 22", "Button 23"
 }
@@ -739,17 +741,19 @@ local buttonScripts = {
     "loadstring(game:HttpGet(('https://raw.githubusercontent.com/Dan41/Scripts/main/%5BCHAOS%5D%20CHAOTIC%20HUB.lua'),true))()",
     "loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()",
     "loadstring(game:HttpGet('https://pastebin.com/raw/e89Mn4Ec'))()",
-    "print('Button 4 pressed')", "print('Button 5 pressed')", "print('Button 6 pressed')",
-    "print('Button 7 pressed')", "print('Button 8 pressed')", "print('Button 9 pressed')",
-    "print('Button 10 pressed')", "print('Button 11 pressed')", "print('Button 12 pressed')",
-    "print('Button 13 pressed')", "print('Button 14 pressed')", "print('Button 15 pressed')",
-    "print('Button 16 pressed')", "print('Button 17 pressed')", "print('Button 18 pressed')",
-    "print('Button 19 pressed')", "print('Button 20 pressed')", "print('Button 21 pressed')",
-    "print('Button 22 pressed')", "print('Button 23 pressed')"
+    "loadstring(game:HttpGet('https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt'))()",  -- Привязываем нужный скрипт
+    "print('Button 5 pressed')", "print('Button 6 pressed')", "print('Button 7 pressed')",
+    "print('Button 8 pressed')", "print('Button 9 pressed')", "print('Button 10 pressed')",
+    "print('Button 11 pressed')", "print('Button 12 pressed')", "print('Button 13 pressed')",
+    "print('Button 14 pressed')", "print('Button 15 pressed')", "print('Button 16 pressed')",
+    "print('Button 17 pressed')", "print('Button 18 pressed')", "print('Button 19 pressed')",
+    "print('Button 20 pressed')", "print('Button 21 pressed')", "print('Button 22 pressed')",
+    "print('Button 23 pressed')"
 }
 
 local buttonList = {}
 
+-- Теперь добавляем кнопки на страницу
 for i, buttonName in ipairs(buttonNames) do
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(0, 125, 0, 50)  -- Размер кнопок изменен
