@@ -599,7 +599,7 @@ local hitboxButton = Instance.new("TextButton")
 hitboxButton.Size = UDim2.new(0, 125, 0, 50)
 hitboxButton.Position = UDim2.new(0, 430, 0, 130)
 hitboxButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-hitboxButton.Text = "Hitbox++"
+hitboxButton.Text = "Hitbox"
 hitboxButton.Parent = Frame
 
 local hitboxSizeInput = Instance.new("TextBox")
@@ -607,7 +607,7 @@ hitboxSizeInput.Size = UDim2.new(0, 125, 0, 30)
 hitboxSizeInput.Position = UDim2.new(0, 430, 0, 190) -- Поле ввода под кнопкой
 hitboxSizeInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 hitboxSizeInput.TextColor3 = Color3.fromRGB(0, 0, 0)
-hitboxSizeInput.PlaceholderText = "Размер (число)"
+hitboxSizeInput.PlaceholderText = "Hitbox size"
 hitboxSizeInput.Text = ""
 hitboxSizeInput.Parent = Frame
 
