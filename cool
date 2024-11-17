@@ -105,6 +105,64 @@ noclipButton.MouseButton1Click:Connect(function()
     end
 end)
 
+
+-- Respawn At Died Position Button
+local respawnButton = Instance.new("TextButton")
+respawnButton.Size = UDim2.new(0, 125, 0, 50)
+respawnButton.Position = UDim2.new(0, 425, 0, 250) -- Отступ ниже предыдущей кнопки
+respawnButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+respawnButton.Text = "RespawnAtDiedPosition"
+respawnButton.Parent = Frame
+
+local respawnEnabled = false
+local lastDeathPosition = nil
+
+-- Обработчик для переключения кнопки
+respawnButton.MouseButton1Click:Connect(function()
+    respawnEnabled = not respawnEnabled
+    respawnButton.BackgroundColor3 = respawnEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+    -- Очищаем позицию смерти при выключении режима
+    if not respawnEnabled then
+        lastDeathPosition = nil
+    end
+end)
+
+-- Слушатель смерти игрока
+local function onCharacterDied()
+    if respawnEnabled then
+        -- Сохраняем позицию смерти только если режим включён
+        local character = localPlayer.Character
+        if character and character:FindFirstChild("HumanoidRootPart") then
+            lastDeathPosition = character.HumanoidRootPart.Position
+        end
+    end
+end
+
+-- Слушатель возрождения игрока
+local function onCharacterAdded(character)
+    character:WaitForChild("Humanoid") -- Ждём загрузки Humanoid
+    character:WaitForChild("HumanoidRootPart") -- Ждём загрузки HumanoidRootPart
+
+    -- Подписываемся на событие смерти
+    character.Humanoid.Died:Connect(onCharacterDied)
+
+    -- Телепортируем игрока на позицию смерти, только если режим включён
+    if respawnEnabled and lastDeathPosition then
+        character.HumanoidRootPart.CFrame = CFrame.new(lastDeathPosition)
+    end
+end
+
+-- Подключаемся к текущему персонажу
+if localPlayer.Character then
+    onCharacterAdded(localPlayer.Character)
+end
+
+-- Подключаемся к событию смены персонажа
+localPlayer.CharacterAdded:Connect(onCharacterAdded)
+
+
+
+
 -- Infinite Jump Button
 local infJumpButton = Instance.new("TextButton")
 infJumpButton.Size = UDim2.new(0, 125, 0, 50)
