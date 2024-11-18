@@ -784,6 +784,7 @@ backButton.MouseButton1Click:Connect(function()
 end)
 
 
+
 local buttonNames = {
     "CHAOS script",
     "Infinite yield",
@@ -791,7 +792,8 @@ local buttonNames = {
     "FlyGui script",
     "Doors script",
     "BABFT Script",
-    "Button 6", "Button 7", "Button 8", "Button 9",
+    "SystemBroken script", -- Обновлено имя кнопки 6
+    "Button 7", "Button 8", "Button 9",
     "Button 10", "Button 11", "Button 12", "Button 13", "Button 14", 
     "Button 15", "Button 16", "Button 17", "Button 18", "Button 19", 
     "Button 20", "Button 21", "Button 22", "Button 23"
@@ -804,7 +806,8 @@ local buttonScripts = {
     "loadstring(game:HttpGet('https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt'))()",
     "loadstring(game:HttpGet('https://raw.githubusercontent.com/KINGHUB01/BlackKing-obf/main/Doors%20Blackking%20And%20BobHub'))()",
     "loadstring(game:HttpGet('https://raw.githubusercontent.com/RunDTM/ZeeroxHub/main/Loader.lua'))()",
-    "print('Button 6 pressed')", "print('Button 7 pressed')", "print('Button 8 pressed')", 
+    "local credits = 'SystemBroken made by system_calix'\nloadstring(game:HttpGet('https://raw.githubusercontent.com/H20CalibreYT/SystemBroken/main/script'))()", -- Скрипт для кнопки 6
+    "print('Button 7 pressed')", "print('Button 8 pressed')", 
     "print('Button 9 pressed')", "print('Button 10 pressed')", "print('Button 11 pressed')", 
     "print('Button 12 pressed')", "print('Button 13 pressed')", "print('Button 14 pressed')", 
     "print('Button 15 pressed')", "print('Button 16 pressed')", "print('Button 17 pressed')", 
